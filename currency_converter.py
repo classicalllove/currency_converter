@@ -14,7 +14,6 @@ while True:
         while True:
             if exchange == 'USD' or exchange == 'usd':
                 print('Oh! It is in the cache!')
-
                 print(f'You received {total} USD.')
                 break
             elif exchange == 'EUR' or exchange == 'eur':
