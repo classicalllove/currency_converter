@@ -2,33 +2,31 @@ import requests
 currency = input()
 all_exchanges = []
 currency_codes = requests.get(f'http://www.floatrates.com/daily/{currency.lower()}.json').json()
-while True:
-    exchange = input()
-    if exchange == '':
-        break
-    else:
-        exchange_rate = currency_codes[exchange.lower()]['rate']
-        money = float(input())
-        total = round(exchange_rate * money, 2)
-        print('Checking the cache...')
-        while True:
-            if exchange == 'USD' or exchange == 'usd':
+
+cache = {}
+
+if 'usd' in currency_codes:
+    cache['usd'] = currency_codes['usd']['rate']
+if 'eur' in currency_codes:
+    cache['eur'] = currency_codes['eur']['rate']
+
+
+if __name__ == '__main__':
+    while True:
+        exchange = input().lower()
+        if exchange == '':
+            break
+        else:
+            money = float(input())
+
+            print('Checking the cache...')
+            if exchange in cache:
                 print('Oh! It is in the cache!')
-                print(f'You received {total} USD.')
-                break
-            elif exchange == 'EUR' or exchange == 'eur':
-                print('Oh! It is in the cache!')
-                print(f'You received {total} EUR.')
-                break
+                exchange_rate = cache[exchange]
             else:
-                if str(exchange) in all_exchanges:
-                    print('Oh! It is in the cache!')
-                    print(f'You received {total} {exchange.upper()}.')
-                    all_exchanges.append(exchange)
-                    break
-                else:
-                    print('Sorry, but it is not in the cache!')
-                    print(f'You received {total} {exchange.upper()}.')
-                    all_exchanges.append(exchange)
-                    break
-    continue
+                print('Sorry, but it is not in the cache!')
+                exchange_rate = currency_codes[exchange]['rate']
+                cache[exchange] = exchange_rate
+
+            total = round(exchange_rate * money, 2)
+            print(f'You received {total} {exchange.upper()}.')
